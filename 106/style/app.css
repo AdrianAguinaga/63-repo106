@@ -1,0 +1,887 @@
+/* ========================================
+   VARIABLES & RESET
+   ======================================== */
+:root {
+    --primary-blue: #2563eb;
+    --primary-blue-dark: #1d4ed8;
+    --primary-blue-light: #3b82f6;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --white: #ffffff;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --radius: 8px;
+    --radius-lg: 12px;
+    
+    /* Status Colors */
+    --status-new: #2563eb;
+    --status-new-bg: #dbeafe;
+    --status-progress: #f59e0b;
+    --status-progress-bg: #fef3c7;
+    --status-blocked: #ef4444;
+    --status-blocked-bg: #fee2e2;
+    --status-done: #10b981;
+    --status-done-bg: #d1fae5;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+    margin: 0;
+    padding: 15px;
+    min-height: 100vh;
+    color: var(--gray-800);
+}
+
+/* ========================================
+   MAIN LAYOUT
+   ======================================== */
+main {
+    display: flex;
+    gap: 20px;
+    min-height: calc(100vh - 30px);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   LIST SECTION (GET METHOD)
+   ======================================== */
+#getMethod {
+    flex: 1;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 24px;
+    border-top: 4px solid var(--primary-blue);
+    position: relative;
+    overflow-y: auto;
+    max-height: calc(100vh - 30px);
+}
+
+#getMethod::before {
+    content: '📋 Task List';
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gray-100);
+}
+
+/* ========================================
+   TASK CARDS CONTAINER
+   ======================================== */
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ========================================
+   TASK CARD
+   ======================================== */
+.task-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    padding: 16px;
+    position: relative;
+    transition: all 0.2s ease;
+    border-left: 4px solid var(--gray-300);
+    animation: slideIn 0.3s ease-out;
+}
+
+.task-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+    border-color: var(--gray-300);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.task-card.removing {
+    animation: fadeOut 0.3s ease-out forwards;
+}
+
+/* Task Color Indicator (left border uses task color) */
+.task-card[data-color] {
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+/* ========================================
+   TASK CARD HEADER
+   ======================================== */
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.task-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+    flex: 1;
+    line-height: 1.4;
+}
+
+/* ========================================
+   STATUS BADGES
+   ======================================== */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+}
+
+.status-badge::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.status-badge.status-new {
+    background: var(--status-new-bg);
+    color: var(--status-new);
+}
+
+.status-badge.status-in-progress {
+    background: var(--status-progress-bg);
+    color: var(--status-progress);
+}
+
+.status-badge.status-blocked {
+    background: var(--status-blocked-bg);
+    color: var(--status-blocked);
+}
+
+.status-badge.status-done {
+    background: var(--status-done-bg);
+    color: var(--status-done);
+}
+
+/* ========================================
+   TASK DESCRIPTION
+   ======================================== */
+.task-description {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.task-description:empty {
+    display: none;
+}
+
+/* ========================================
+   TASK META INFO (Date, Budget)
+   ======================================== */
+.task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-100);
+}
+
+.task-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--gray-500);
+}
+
+.task-meta-item svg,
+.task-meta-item .icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+}
+
+.task-date {
+    font-variant-numeric: tabular-nums;
+}
+
+.task-budget {
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.task-budget::before {
+    content: '$';
+}
+
+/* Color swatch in meta */
+.task-color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--gray-200);
+    display: inline-block;
+}
+
+/* ========================================
+   TASK ACTIONS (Edit, Delete)
+   ======================================== */
+.task-actions {
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.task-card:hover .task-actions {
+    opacity: 1;
+}
+
+.task-btn {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    background: var(--gray-100);
+    color: var(--gray-600);
+}
+
+.task-btn:hover {
+    background: var(--gray-200);
+    color: var(--gray-800);
+}
+
+.task-btn-edit:hover {
+    background: var(--status-new-bg);
+    color: var(--status-new);
+}
+
+.task-btn-delete:hover {
+    background: var(--status-blocked-bg);
+    color: var(--status-blocked);
+}
+
+.task-btn-complete:hover {
+    background: var(--status-done-bg);
+    color: var(--status-done);
+}
+
+/* ========================================
+   EMPTY STATE
+   ======================================== */
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--gray-400);
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.empty-state-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    margin: 0 0 8px 0;
+}
+
+.empty-state-text {
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ========================================
+   TASK COUNT BADGE
+   ======================================== */
+.task-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-blue);
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* ========================================
+   FILTER/SORT CONTROLS
+   ======================================== */
+.task-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--gray-200);
+    border-radius: 20px;
+    background: var(--white);
+    color: var(--gray-600);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    border-color: var(--primary-blue);
+    color: var(--primary-blue);
+}
+
+.filter-btn.active {
+    background: var(--primary-blue);
+    border-color: var(--primary-blue);
+    color: var(--white);
+}
+
+/* ========================================
+   SEARCH INPUT
+   ======================================== */
+.search-container {
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    background: var(--gray-50);
+    transition: all 0.2s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    pointer-events: none;
+}
+
+/* ========================================
+   FORM SECTION (POST METHOD)
+   ======================================== */
+#postMethod {
+    flex: 1;
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 24px;
+    border-top: 4px solid var(--gray-500);
+    max-width: 500px;
+    height: fit-content;
+    position: sticky;
+    top: 15px;
+}
+
+#postMethod::before {
+    content: '✏️ New Task';
+    display: block;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gray-100);
+}
+
+/* ========================================
+   FORM ELEMENTS
+   ======================================== */
+.form-label {
+    font-weight: 500;
+    color: var(--gray-700);
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.form-control {
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    color: var(--gray-800);
+    background-color: var(--gray-50);
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.form-control:hover {
+    border-color: var(--gray-400);
+    background-color: var(--white);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Validation States */
+.form-control.is-valid {
+    border-color: var(--status-done);
+}
+
+.form-control.is-invalid {
+    border-color: var(--status-blocked);
+    background-color: #fef2f2;
+}
+
+.form-control.is-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.validation-message {
+    font-size: 0.75rem;
+    margin-top: 4px;
+    color: var(--status-blocked);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+select.form-control {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+input[type="color"].form-control {
+    padding: 4px;
+    height: 44px;
+    cursor: pointer;
+}
+
+input[type="datetime-local"].form-control {
+    cursor: pointer;
+}
+
+input[type="number"].form-control {
+    font-variant-numeric: tabular-nums;
+}
+
+/* ========================================
+   FORM GROUPS
+   ======================================== */
+#postMethod .mt-3 {
+    margin-top: 16px !important;
+}
+
+#postMethod .mt-3:first-of-type {
+    margin-top: 0 !important;
+}
+
+/* Color picker preview */
+.color-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.color-preview input[type="color"] {
+    flex: 1;
+}
+
+.color-preview-swatch {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius);
+    border: 2px solid var(--gray-200);
+    transition: border-color 0.2s ease;
+}
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-blue-dark) 100%);
+    border: none;
+    border-radius: var(--radius);
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-md);
+    width: 100%;
+    margin-top: 8px;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-blue-dark) 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Secondary/Cancel Button */
+.btn-secondary {
+    background: var(--white);
+    border: 1.5px solid var(--gray-300);
+    border-radius: var(--radius);
+    padding: 12px 32px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-secondary:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-400);
+}
+
+/* Button Group */
+.btn-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.btn-group .btn-primary,
+.btn-group .btn-secondary {
+    flex: 1;
+    margin-top: 0;
+}
+
+/* ========================================
+   LOADING SPINNER
+   ======================================== */
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray-200);
+    border-top-color: var(--primary-blue);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn-primary .spinner {
+    border-color: rgba(255, 255, 255, 0.3);
+    border-top-color: var(--white);
+    margin-right: 8px;
+}
+
+/* ========================================
+   SUCCESS MESSAGE / TOAST
+   ======================================== */
+.toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: var(--radius);
+    background: var(--gray-800);
+    color: var(--white);
+    font-size: 0.9rem;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.toast.success {
+    background: var(--status-done);
+}
+
+.toast.error {
+    background: var(--status-blocked);
+}
+
+/* ========================================
+   CHECKBOX (for done tasks)
+   ======================================== */
+.task-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray-300);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.task-checkbox:hover {
+    border-color: var(--status-done);
+}
+
+.task-checkbox.checked {
+    background: var(--status-done);
+    border-color: var(--status-done);
+}
+
+.task-checkbox.checked::after {
+    content: '✓';
+    color: var(--white);
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.task-card.completed .task-title {
+    text-decoration: line-through;
+    color: var(--gray-400);
+}
+
+.task-card.completed .task-description {
+    text-decoration: line-through;
+    color: var(--gray-400);
+}
+
+/* ========================================
+   DRAG & DROP
+   ======================================== */
+.task-card.dragging {
+    opacity: 0.5;
+    transform: rotate(2deg);
+}
+
+.task-card.drag-over {
+    border-top: 2px dashed var(--primary-blue);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 900px) {
+    main {
+        flex-direction: column;
+    }
+    
+    #postMethod {
+        max-width: 100%;
+        position: static;
+    }
+    
+    #getMethod {
+        max-height: none;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    #getMethod,
+    #postMethod {
+        padding: 16px;
+    }
+    
+    .btn-primary {
+        padding: 14px 24px;
+    }
+    
+    .task-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .task-actions {
+        opacity: 1;
+    }
+    
+    .task-controls {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+    }
+    
+    .toast {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+    }
+}
+
+/* ========================================
+   STATUS SELECT OPTIONS STYLING
+   ======================================== */
+#selStatus option[value="new"] {
+    color: var(--status-new);
+}
+
+#selStatus option[value="in progress"] {
+    color: var(--status-progress);
+}
+
+#selStatus option[value="blocked"] {
+    color: var(--status-blocked);
+}
+
+#selStatus option[value="done"] {
+    color: var(--status-done);
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+#getMethod::-webkit-scrollbar {
+    width: 6px;
+}
+
+#getMethod::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 3px;
+}
+
+#getMethod::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 3px;
+}
+
+#getMethod::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+.hidden {
+    display: none !important;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+.mt-4 { margin-top: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
