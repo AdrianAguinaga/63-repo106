@@ -1,6 +1,6 @@
 const API_URL = "https://106api-b0bnggbsgnezbzcz.westus3-01.azurewebsites.net/api/tasks";
 
-function saveTask(){
+function saveTask() {
     const title = $('#txtTitle').val();
     const description = $('#txtDescription').val();
     const color = $('#selColor').val();
@@ -16,34 +16,87 @@ function saveTask(){
         url: API_URL,
         data: JSON.stringify(data),
         contentType: "application/json",
-        success: function(created){
+        success: function (created) {
             console.log("Task created:", created);
         },
-        error: function(error){
+        error: function (error) {
             console.log("Error:", error);
         }
     });
 
-
 }
 
+function loadTask() {
+    $.ajax({
+        type: "get",
+        url: API_URL,
+        dataType: "json",
+        success: function (tasks) {
+            console.log(tasks);
+            //all the objects are being send it to 1 container
+            for (let i = 0; i < tasks.length; i++) {
+                let temp = tasks[i];
+                if (temp.name === "adrian") {
+                    displayTask(temp);
+                }
+            }
+            // tasks.forEach(displayTask);
+            // MiniChallenge - use only elements that YOU create
+
+        }
+    });
+}
+
+function updateTask() {
+    $.ajax({
+        type: "PUT",
+        url: "https://106api-b0bnggbsgnezbzcz.westus3-01.azurewebsites.net/api/tasks/2",
+        data: JSON.stringify({
+            title: "Luis",
+        }),
+        contentType: "application/json",
+        success: function (response) {
+            console.log("update seccess", response)
+        },
+        error: function (err) {
+            console.log(err)
+        }
+    });
+
+}
+function displayTask(task) {
+    const data = `
+    <div class="task" style="border-color:${task.color}">
+    <div class="info">
+    <h4>${task.title}</h4>
+    <p>${task.description}</p>
+    </div>
+    <label class="status">${task.status}</label>
+    <div class="date-budget">
+    <label>${task.date}</label>
+    <label>${task.budget}</label>
+    </div> 
+    </div>
+    `
+    $(".list").append(data);
+}
 
 // test the connection to the API
-function testRequest()
-{   
-$.ajax({
-    type: "GET",
-    url: API_URL,
-    success: function(response){
-        console.log("API Response:", response);
-    },
-    error: function(error){
-        console.log("Error:", error);
-    }    
-});
+function testRequest() {
+    $.ajax({
+        type: "GET",
+        url: API_URL,
+        success: function (response) {
+            console.log("API Response:", response);
+        },
+        error: function (error) {
+            console.log("Error:", error);
+        }
+    });
 }
 
-function init(){
-    $('#btnSave').click(saveTask);    
+function init() {
+    $('#btnSave').click(saveTask);
+    loadTask();
 }
 window.onload = init;
